@@ -19,7 +19,6 @@ import {
   Statistic,
 } from "antd";
 import {
-  SearchOutlined,
   CalendarOutlined,
   FileTextOutlined,
   CheckCircleOutlined,
@@ -28,10 +27,9 @@ import {
   UserOutlined,
   BellOutlined,
   MenuFoldOutlined,
-  MenuUnfoldOutlined,
+  MenuUnfoldOutlined, 
 } from "@ant-design/icons";
 import * as echarts from "echarts";
-
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Paragraph, Text } = Typography;
 const { TabPane } = Tabs;
