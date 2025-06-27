@@ -6,11 +6,14 @@ import java.time.LocalDateTime;
 
 @Data
 public class TestOrderRequest {
+    private String testOrderId;
     private String sampleId;
     private String accountId;
     private String serviceId;
+    private LocalDateTime testOrderDate;
     private LocalDateTime preferredDate;
-    private String requestType;  // "home_collection", "facility_collection", "self_collection"
+    private String orderType; //home-collect, etc
+    private String status;  // "pending", "confirmed", "completed", "cancelled"
     private Boolean isOnlyCase;
     private String note;
 }

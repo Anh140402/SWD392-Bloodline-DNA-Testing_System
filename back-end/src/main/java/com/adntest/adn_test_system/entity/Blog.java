@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Integer id;
+    private String id;
 
     private String title;
     private String content;

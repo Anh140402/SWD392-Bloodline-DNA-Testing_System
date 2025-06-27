@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 
 @Data
 public class ServiceResponse {
-    private String id;
-    private String name;
+    private String serviceId;
+    private String serviceName;
     private String description;
     private BigDecimal price;
-    private String type;
+    private String serviceType;
 }
