@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 
 @Data
 public class ServiceRequest {
-    private String name;
+    private String serviceName;
     private String description;
     private BigDecimal price;
-    private String type;
+    private String serviceType;
 }

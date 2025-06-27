@@ -1,18 +1,20 @@
 package com.adntest.adn_test_system.dto.response;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class TestOrderResponse {
-    private String id;
+    private String testOrderId;
     private String sampleId;
     private String accountId;
     private String serviceId;
-    private LocalDateTime requestDate;
+    private LocalDateTime testOrderDate;
     private LocalDateTime preferredDate;
-    private String requestType;
+    private String orderType; //home-collect, etc
     private String status;  // "pending", "confirmed", "completed", "cancelled"
     private Boolean isOnlyCase;
     private String note;

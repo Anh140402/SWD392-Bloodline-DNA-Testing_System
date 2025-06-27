@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 
 @Data
 public class TestReportResponse {
-    private String id;
-    private String requestId;
+    private String testReportId;
+    private String testOrderId;
     private String result;
     private LocalDateTime createdAt;
-
+    private Boolean isPositive;
 }

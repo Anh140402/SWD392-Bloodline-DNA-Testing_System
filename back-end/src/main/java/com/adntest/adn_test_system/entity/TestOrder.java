@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class TestOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String testRequestId;
+    private String testOrderId;
 
     @ManyToOne
     @JoinColumn(name = "sample_id")
@@ -31,7 +31,7 @@ public class TestOrder {
     @JoinColumn(name = "service_id")
     private Service service;
 
-    private LocalDateTime requestDate;
+    private LocalDateTime testOrderDate;
     private LocalDateTime preferredDate;
 
     private String orderType; // "home_collection", etc.
