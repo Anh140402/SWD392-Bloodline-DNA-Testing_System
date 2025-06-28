@@ -31,6 +31,8 @@ public class TestOrder {
     @JoinColumn(name = "service_id")
     private Service service;
 
+    private String appointmentId;
+
     private LocalDateTime testOrderDate;
     private LocalDateTime preferredDate;
 

@@ -12,6 +12,7 @@ public class TestOrderResponse {
     private String sampleId;
     private String accountId;
     private String serviceId;
+    private String appointmentId;
     private LocalDateTime testOrderDate;
     private LocalDateTime preferredDate;
     private String orderType; //home-collect, etc

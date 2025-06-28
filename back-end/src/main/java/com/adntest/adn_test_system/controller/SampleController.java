@@ -24,7 +24,7 @@ public class SampleController {
     private final SampleService sampleService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get all samples (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Page<SampleResponse>> getAllSamples(Pageable pageable) {
         return ResponseEntity.ok(sampleService.getAllSamples(pageable));

@@ -1,8 +1,7 @@
 package com.adntest.adn_test_system.configuration;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.adntest.adn_test_system.service.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,9 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.adntest.adn_test_system.service.CustomUserDetailsService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -51,7 +49,8 @@ public class SecurityConfig {
                     "/v3/api-docs/**",
                     "/v3/api-docs.yaml",
                     "/swagger-ui/**",
-                    "/swagger-ui.html"
+                    "/swagger-ui.html",
+                        "/api/v1/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
