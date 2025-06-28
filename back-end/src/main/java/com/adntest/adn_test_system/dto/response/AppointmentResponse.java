@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Data
 public class AppointmentResponse {
     private String appointmentId;
-    private String orderId;
     private LocalDateTime scheduleDate;
     private String location;
     private String accountId;
+    private String testOrderId;
 }

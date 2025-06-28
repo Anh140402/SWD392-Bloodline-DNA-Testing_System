@@ -16,4 +16,5 @@ public class TestOrderRequest {
     private String status;  // "pending", "confirmed", "completed", "cancelled"
     private Boolean isOnlyCase;
     private String note;
+    private String appointmentId; // optional, if appointment is needed
 }

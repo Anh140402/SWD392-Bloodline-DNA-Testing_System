@@ -16,8 +16,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/v1/appointments")
 @RequiredArgsConstructor
@@ -56,24 +54,5 @@ public class AppointmentController {
         appointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build();
     }
-
-//    @GetMapping("/my-appointments")
-//    @Operation(summary = "Get current user's appointments", security = @SecurityRequirement(name = "Bearer Authentication"))
-//    public ResponseEntity<Page<AppointmentResponse>> getMyAppointments(@AuthenticationPrincipal UserDetails userDetails, Pageable pageable) {
-//        return ResponseEntity.ok(appointmentService.getAppointmentsByUsername(userDetails.getUsername(), pageable));
-//    }
-
-    @GetMapping("/test-order/{testOrderId}")
-    @Operation(summary = "Get appointment by test order ID", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<Optional<AppointmentResponse>> getAppointmentByTestOrder(@PathVariable String testOrderId) {
-        return ResponseEntity.ok(appointmentService.getAppointmentByTestOrderId(testOrderId));
-    }
-
-//    @GetMapping("/upcoming")
-//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
-//    @Operation(summary = "Get upcoming appointments (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
-//    public ResponseEntity<Page<AppointmentResponse>> getUpcomingAppointments(Pageable pageable) {
-//        return ResponseEntity.ok(appointmentService.getUpcomingAppointments(pageable));
-//    }
 }
 

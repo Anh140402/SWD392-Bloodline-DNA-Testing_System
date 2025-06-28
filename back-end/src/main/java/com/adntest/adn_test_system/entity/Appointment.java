@@ -19,10 +19,6 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String appointmentId;
 
-    @OneToOne
-    @JoinColumn(name = "request_id")
-    private TestOrder testOrder;
-
     private LocalDateTime scheduleDate;
     private String location;
 
