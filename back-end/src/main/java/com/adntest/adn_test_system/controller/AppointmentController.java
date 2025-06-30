@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,7 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+   // @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get all appointments (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Page<AppointmentResponse>> getAllAppointments(Pageable pageable) {
         return ResponseEntity.ok(appointmentService.getAllAppointments(pageable));

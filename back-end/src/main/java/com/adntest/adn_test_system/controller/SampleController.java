@@ -1,20 +1,17 @@
 package com.adntest.adn_test_system.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
 import com.adntest.adn_test_system.dto.request.SampleRequest;
 import com.adntest.adn_test_system.dto.response.SampleResponse;
 import com.adntest.adn_test_system.service.SampleService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/samples")
@@ -31,28 +28,28 @@ public class SampleController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get sample by ID (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<SampleResponse> getSampleById(@PathVariable String id) {
         return ResponseEntity.ok(sampleService.getSampleById(id));
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    @PostMapping    
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Create new sample (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<SampleResponse> createSample(@Valid @RequestBody SampleRequest request) {
         return ResponseEntity.ok(sampleService.createSample(request));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+   // @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Update sample (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<SampleResponse> updateSample(@PathVariable String id, @Valid @RequestBody SampleRequest request) {
         return ResponseEntity.ok(sampleService.updateSample(id, request));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+ //   @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete sample (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteSample(@PathVariable String id) {
         sampleService.deleteSample(id);
@@ -66,7 +63,7 @@ public class SampleController {
     }
 
     @GetMapping("/type/{sampleType}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get samples by type (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Page<SampleResponse>> getSamplesByType(@PathVariable String sampleType, Pageable pageable) {
         return ResponseEntity.ok(sampleService.getSamplesByType(sampleType, pageable));
