@@ -1,13 +1,13 @@
-package SWD392.Bloodline_DNA_Testing_System;
+package com.adntest.adn_test_system;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BackendApplication {
+public class AdnTestSystemApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BackendApplication.class, args);
+		SpringApplication.run(AdnTestSystemApplication.class, args);
 	}
 
 }
