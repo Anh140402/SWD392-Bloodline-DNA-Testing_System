@@ -253,7 +253,7 @@ const App: React.FC = () => {
         trigger={null}
         collapsible
         collapsed={collapsed}
-        className="bg-white shadow-md"
+        className="!bg-white shadow-md"
       >
         <div className="p-4">
           <Title level={4} className="text-center text-blue-600">
@@ -298,7 +298,7 @@ const App: React.FC = () => {
         </div>
       </Sider>
       <Layout>
-        <Header className="bg-white p-0 flex items-center justify-between px-4 shadow-sm h-16">
+        <Header className="!bg-white p-0 flex items-center justify-between px-4 shadow-sm h-16">
           <div className="flex items-center">
             <Button
               type="text"
