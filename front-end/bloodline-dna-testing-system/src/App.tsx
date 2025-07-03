@@ -6,10 +6,10 @@ import HomePage from "./pages/Homepage";
 import CreateAppointment from "./pages/CreateAppoiment";
 const App: React.FC = () => {
   return (
-    // <HomePage />
+    <HomePage />
     // <StaffPage />
     // <DetailPage />
-    <CreateAppointment />
+    // <CreateAppointment />
   );
 };
 

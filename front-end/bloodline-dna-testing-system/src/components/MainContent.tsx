@@ -11,7 +11,7 @@ import {
   Space,
 } from "antd";
 import { SearchOutlined, RightOutlined } from "@ant-design/icons";
-import * as echarts from "echarts";
+import * as echarts from 'echarts';
 
 const { Content } = Layout; // Chỉ Layout.Content
 const { Title, Paragraph, Text } = Typography;
