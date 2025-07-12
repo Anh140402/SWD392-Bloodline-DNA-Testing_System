@@ -17,6 +17,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+<<<<<<< Updated upstream
+=======
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+>>>>>>> Stashed changes
 
 @RestController
 @RequestMapping("/api/v1/feedbacks")
@@ -34,29 +41,26 @@ public class FeedbackController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get feedback by ID", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<FeedbackResponse> getFeedbackById(@PathVariable String id, @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(feedbackService.getFeedbackById(id, userDetails));
+    public ResponseEntity<FeedbackResponse> getFeedbackById(@PathVariable String id) {
+        return ResponseEntity.ok(feedbackService.getFeedbackById(id));
     }
 
     @PostMapping
     @Operation(summary = "Create new feedback", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<FeedbackResponse> createFeedback(@Valid @RequestBody FeedbackRequest request, @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(feedbackService.createFeedback(request, userDetails));
+    public ResponseEntity<FeedbackResponse> createFeedback(@Valid @RequestBody FeedbackRequest request) {
+        return ResponseEntity.ok(feedbackService.createFeedback(request));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update feedback", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<FeedbackResponse> updateFeedback(@PathVariable String id, @Valid @RequestBody FeedbackRequest request, @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(feedbackService.updateFeedback(id, request, userDetails));
+    public ResponseEntity<FeedbackResponse> updateFeedback(@PathVariable String id, @Valid @RequestBody FeedbackRequest request) {
+        return ResponseEntity.ok(feedbackService.updateFeedback(id, request));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete feedback", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<Void> deleteFeedback(@PathVariable String id, @AuthenticationPrincipal UserDetails userDetails) {
-        feedbackService.deleteFeedback(id, userDetails);
+    public ResponseEntity<Void> deleteFeedback(@PathVariable String id) {
+        feedbackService.deleteFeedback(id);
         return ResponseEntity.noContent().build();
     }
-
-
 }
-

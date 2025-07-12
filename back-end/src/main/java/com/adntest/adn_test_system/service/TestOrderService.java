@@ -12,7 +12,7 @@ import com.adntest.adn_test_system.repository.TestOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,21 +42,24 @@ public class TestOrderService {
         return testOrders.map(this::mapToDTO);
     }
 
-    public TestOrderResponse getTestOrderById(String id, UserDetails userDetails) {
+    public TestOrderResponse getTestOrderById(String id) {
         TestOrder testOrder = testOrderRepository.findById(id)
                 .orElseThrow(() -> new AuthException("Test order not found"));
 
-        // Authorization check
-        if (!userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")) &&
-                !testOrder.getAccount().getUsername().equals(userDetails.getUsername())) {
-            throw new AuthException("Unauthorized access to test order");
-        }
+        // Get current account from security context
+        Account currentAccount = getCurrentAccount();
+
 
         return mapToDTO(testOrder);
     }
 
-    public Page<TestOrderResponse> getTestOrdersByUser(String username, Pageable pageable) {
-        Page<TestOrder> testOrders = testOrderRepository.findByAccountUsername(username, pageable);
+    public Page<TestOrderResponse> getMyTestOrders(Pageable pageable) {
+        Account currentAccount = getCurrentAccount();
+        if (currentAccount == null) {
+            throw new AuthException("User not authenticated");
+        }
+
+        Page<TestOrder> testOrders = testOrderRepository.findByAccountUsername(currentAccount.getUsername(), pageable);
         return testOrders.map(this::mapToDTO);
     }
 
@@ -66,8 +69,9 @@ public class TestOrderService {
         return testOrders.map(this::mapToDTO);
     }
 
-    public TestOrderResponse createTestOrder(TestOrderRequest request, UserDetails userDetails) {
-        Account account = accountRepository.findByUsername(userDetails.getUsername())
+    public TestOrderResponse createTestOrder(TestOrderRequest request) {
+        String userId = request.getAccountId();
+        Account account = accountRepository.findById(userId)
                 .orElseThrow(() -> new AuthException("Account not found"));
 
         validateOrderType(request.getOrderType());
@@ -167,6 +171,12 @@ public class TestOrderService {
         if (orderType == null || !VALID_ORDER_TYPES.contains(orderType.toLowerCase())) {
             throw new AuthException("Invalid order type. Valid types: " + String.join(", ", VALID_ORDER_TYPES));
         }
+    }
+
+    private Account getCurrentAccount() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return accountRepository.findByUsername(username)
+                .orElseThrow(() -> new AuthException("Current user not found"));
     }
 
     public List<String> getValidStatuses() {

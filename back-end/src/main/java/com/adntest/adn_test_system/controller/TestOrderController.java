@@ -17,6 +17,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+<<<<<<< Updated upstream
+=======
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+>>>>>>> Stashed changes
 
 @RestController
 @RequestMapping("/api/v1/test-orders")
@@ -26,7 +33,11 @@ public class TestOrderController {
     private final TestOrderService testOrderService;
 
     @GetMapping
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+=======
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+>>>>>>> Stashed changes
     @Operation(summary = "Get all test orders (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Page<TestOrderResponse>> getAllTestOrders(Pageable pageable) {
         return ResponseEntity.ok(testOrderService.getAllTestOrders(pageable));
@@ -34,31 +45,33 @@ public class TestOrderController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get test order by ID", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<TestOrderResponse> getTestOrderById(
-            @PathVariable String id,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(testOrderService.getTestOrderById(id, userDetails));
+    public ResponseEntity<TestOrderResponse> getTestOrderById(@PathVariable String id) {
+        return ResponseEntity.ok(testOrderService.getTestOrderById(id));
     }
 
     @PostMapping
     @Operation(summary = "Create new test order", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<TestOrderResponse> createTestOrder(
-            @Valid @RequestBody TestOrderRequest request,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(testOrderService.createTestOrder(request, userDetails));
+    public ResponseEntity<TestOrderResponse> createTestOrder(@Valid @RequestBody TestOrderRequest request) {
+        return ResponseEntity.ok(testOrderService.createTestOrder(request));
     }
 
     @PutMapping("/{id}")
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+=======
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+>>>>>>> Stashed changes
     @Operation(summary = "Update test order (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<TestOrderResponse> updateTestOrder(
-            @PathVariable String id,
-            @Valid @RequestBody TestOrderRequest request) {
+    public ResponseEntity<TestOrderResponse> updateTestOrder(@PathVariable String id, @Valid @RequestBody TestOrderRequest request) {
         return ResponseEntity.ok(testOrderService.updateTestOrder(id, request));
     }
 
     @DeleteMapping("/{id}")
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN')")
+=======
+    //@PreAuthorize("hasRole('ADMIN')")
+>>>>>>> Stashed changes
     @Operation(summary = "Delete test order (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteTestOrder(@PathVariable String id) {
         testOrderService.deleteTestOrder(id);
@@ -67,28 +80,29 @@ public class TestOrderController {
 
     @GetMapping("/my-orders")
     @Operation(summary = "Get current user's test orders", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<Page<TestOrderResponse>> getMyTestOrders(
-            @AuthenticationPrincipal UserDetails userDetails,
-            Pageable pageable) {
-        return ResponseEntity.ok(testOrderService.getTestOrdersByUser(userDetails.getUsername(), pageable));
+    public ResponseEntity<Page<TestOrderResponse>> getMyTestOrders(Pageable pageable) {
+        return ResponseEntity.ok(testOrderService.getMyTestOrders(pageable));
     }
 
     @GetMapping("/status/{status}")
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+=======
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+>>>>>>> Stashed changes
     @Operation(summary = "Get test orders by status (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<Page<TestOrderResponse>> getTestOrdersByStatus(
-            @PathVariable String status,
-            Pageable pageable) {
+    public ResponseEntity<Page<TestOrderResponse>> getTestOrdersByStatus(@PathVariable String status, Pageable pageable) {
         return ResponseEntity.ok(testOrderService.getTestOrdersByStatus(status, pageable));
     }
 
     @PatchMapping("/{id}/status")
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+=======
+    //@PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+>>>>>>> Stashed changes
     @Operation(summary = "Update test order status (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<TestOrderResponse> updateTestOrderStatus(
-            @PathVariable String id,
-            @RequestParam String status) {
+    public ResponseEntity<TestOrderResponse> updateTestOrderStatus(@PathVariable String id, @RequestParam String status) {
         return ResponseEntity.ok(testOrderService.updateTestOrderStatus(id, status));
     }
 }
-

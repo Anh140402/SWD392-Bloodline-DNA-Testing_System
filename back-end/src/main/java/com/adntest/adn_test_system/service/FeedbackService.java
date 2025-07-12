@@ -12,6 +12,7 @@ import com.adntest.adn_test_system.repository.TestOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,17 +33,20 @@ public class FeedbackService {
                 .map(this::mapToResponse);
     }
 
-    public FeedbackResponse getFeedbackById(String id, UserDetails userDetails) {
+    public FeedbackResponse getFeedbackById(String id) {
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new AuthException("Feedback not found"));
-        if (!feedback.getAccount().getUserId().equals(userDetails.getUsername())) {
+
+        String currentUserId = getCurrentUserId();
+        if (!feedback.getAccount().getUserId().equals(currentUserId)) {
             throw new AuthException("Access denied");
         }
         return mapToResponse(feedback);
     }
 
-    public FeedbackResponse createFeedback(FeedbackRequest request, UserDetails userDetails) {
-        Account account = accountRepository.findById(userDetails.getUsername())
+    public FeedbackResponse createFeedback(FeedbackRequest request) {
+        String currentUserId = getCurrentUserId();
+        Account account = accountRepository.findById(currentUserId)
                 .orElseThrow(() -> new AuthException("User not found"));
         TestOrder testOrder = testOrderRepository.findById(request.getTestOrderId())
                 .orElseThrow(() -> new AuthException("Test order not found"));
@@ -58,10 +62,12 @@ public class FeedbackService {
         return mapToResponse(feedbackRepository.save(feedback));
     }
 
-    public FeedbackResponse updateFeedback(String id, FeedbackRequest request, UserDetails userDetails) {
+    public FeedbackResponse updateFeedback(String id, FeedbackRequest request) {
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new AuthException("Feedback not found"));
-        if (!feedback.getAccount().getUserId().equals(userDetails.getUsername())) {
+
+        String currentUserId = getCurrentUserId();
+        if (!feedback.getAccount().getUserId().equals(currentUserId)) {
             throw new AuthException("Unauthorized");
         }
 
@@ -71,25 +77,36 @@ public class FeedbackService {
         return mapToResponse(feedbackRepository.save(feedback));
     }
 
-    public void deleteFeedback(String id, UserDetails userDetails) {
+    public void deleteFeedback(String id) {
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new AuthException("Feedback not found"));
-        if (!feedback.getAccount().getUserId().equals(userDetails.getUsername())) {
+
+        String currentUserId = getCurrentUserId();
+        if (!feedback.getAccount().getUserId().equals(currentUserId)) {
             throw new AuthException("Unauthorized");
         }
         feedbackRepository.delete(feedback);
     }
-
-
-
-
 
     public Page<FeedbackResponse> getFeedbacksByMinimumRating(Integer minRating, Pageable pageable) {
         return feedbackRepository.findByRatingGreaterThanEqual(minRating, pageable)
                 .map(this::mapToResponse);
     }
 
-
+    private String getCurrentUserId() {
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof UserDetails) {
+                return ((UserDetails) principal).getUsername();
+            }
+            if (principal instanceof String) {
+                return (String) principal;
+            }
+        } catch (Exception e) {
+            // Log the exception if needed
+        }
+        throw new AuthException("User not authenticated");
+    }
 
     private FeedbackResponse mapToResponse(Feedback feedback) {
         return FeedbackResponse.builder()

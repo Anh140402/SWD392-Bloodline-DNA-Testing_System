@@ -11,6 +11,7 @@ import com.adntest.adn_test_system.repository.TestOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +31,15 @@ public class KitService {
         return kitRepository.findAll(pageable).map(this::toResponse);
     }
 
-    public KitResponse getKitById(String id, UserDetails userDetails) {
+    public KitResponse getKitById(String id) {
         Kit kit = kitRepository.findById(id).orElseThrow(() -> new AuthException("Kit not found"));
-        validateAccess(kit.getTestOrder().getAccount().getUserId(), userDetails);
+
+        // Get current user from security context
+        UserDetails userDetails = getCurrentUserDetails();
+        if (userDetails != null) {
+            validateAccess(kit.getTestOrder().getAccount().getUserId(), userDetails);
+        }
+
         return toResponse(kit);
     }
 
@@ -69,18 +76,32 @@ public class KitService {
         kitRepository.deleteById(id);
     }
 
-    public KitResponse getKitByCode(String code, UserDetails userDetails) {
+    public KitResponse getKitByCode(String code) {
         Kit kit = kitRepository.findByCode(code).orElseThrow(() -> new AuthException("Kit not found"));
-        validateAccess(kit.getTestOrder().getAccount().getUserId(), userDetails);
+
+        // Get current user from security context
+        UserDetails userDetails = getCurrentUserDetails();
+        if (userDetails != null) {
+            validateAccess(kit.getTestOrder().getAccount().getUserId(), userDetails);
+        }
+
         return toResponse(kit);
     }
 
-    public KitResponse getKitByTestOrder(String testOrderId, UserDetails userDetails) {
+    public KitResponse getKitByTestOrder(String testOrderId) {
         TestOrder testOrder = testOrderRepository.findById(testOrderId)
                 .orElseThrow(() -> new AuthException("Test order not found"));
 
-        if (!testOrder.getAccount().getUserId().equals(userDetails.getUsername())) {
-            throw new AuthException("Unauthorized access to test order's kit");
+        // Get current user from security context
+        UserDetails userDetails = getCurrentUserDetails();
+        if (userDetails != null && !testOrder.getAccount().getUserId().equals(userDetails.getUsername())) {
+            // Check if user has admin/staff role
+            boolean hasAdminOrStaffRole = userDetails.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_STAFF"));
+
+            if (!hasAdminOrStaffRole) {
+                throw new AuthException("Unauthorized access to test order's kit");
+            }
         }
 
         Kit kit = kitRepository.findByTestOrder(testOrder)
@@ -123,5 +144,13 @@ public class KitService {
                 userDetails.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_STAFF"))) {
             throw new AuthException("Unauthorized access");
         }
+    }
+
+    private UserDetails getCurrentUserDetails() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return (UserDetails) principal;
+        }
+        return null;
     }
 }

@@ -17,6 +17,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+<<<<<<< Updated upstream
+=======
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+>>>>>>> Stashed changes
 
 @RestController
 @RequestMapping("/api/v1/blogs")
@@ -38,21 +45,33 @@ public class BlogController {
     }
 
     @PostMapping
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+=======
+    // @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+>>>>>>> Stashed changes
     @Operation(summary = "Create new blog (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<BlogResponse> createBlog(@Valid @RequestBody BlogRequest request, @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(blogService.createBlog(request, userDetails));
+    public ResponseEntity<BlogResponse> createBlog(@Valid @RequestBody BlogRequest request) {
+        return ResponseEntity.ok(blogService.createBlog(request));
     }
 
     @PutMapping("/{id}")
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+=======
+    // @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+>>>>>>> Stashed changes
     @Operation(summary = "Update blog (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<BlogResponse> updateBlog(@PathVariable String id, @Valid @RequestBody BlogRequest request) {
         return ResponseEntity.ok(blogService.updateBlog(id, request));
     }
 
     @DeleteMapping("/{id}")
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN')")
+=======
+    // @PreAuthorize("hasRole('ADMIN')")
+>>>>>>> Stashed changes
     @Operation(summary = "Delete blog (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteBlog(@PathVariable String id) {
         blogService.deleteBlog(id);
@@ -66,10 +85,14 @@ public class BlogController {
     }
 
     @GetMapping("/my-blogs")
+<<<<<<< Updated upstream
     @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+=======
+    //  @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+>>>>>>> Stashed changes
     @Operation(summary = "Get current user's blogs (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<Page<BlogResponse>> getMyBlogs(@AuthenticationPrincipal UserDetails userDetails, Pageable pageable) {
-        return ResponseEntity.ok(blogService.getBlogsByAuthor(userDetails.getUsername(), pageable));
+    public ResponseEntity<Page<BlogResponse>> getMyBlogs(Pageable pageable) {
+        return ResponseEntity.ok(blogService.getMyBlogs(pageable));
     }
 
     @GetMapping("/search")
@@ -84,4 +107,3 @@ public class BlogController {
         return ResponseEntity.ok(blogService.getRecentBlogs(pageable));
     }
 }
-
