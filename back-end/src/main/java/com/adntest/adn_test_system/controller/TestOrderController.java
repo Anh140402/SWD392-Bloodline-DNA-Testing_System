@@ -40,9 +40,8 @@ public class TestOrderController {
     @PostMapping
     @Operation(summary = "Create new test order", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<TestOrderResponse> createTestOrder(
-            @Valid @RequestBody TestOrderRequest request,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(testOrderService.createTestOrder(request, userDetails));
+            @Valid @RequestBody TestOrderRequest request) {
+        return ResponseEntity.ok(testOrderService.createTestOrder(request));
     }
 
     @PutMapping("/{id}")

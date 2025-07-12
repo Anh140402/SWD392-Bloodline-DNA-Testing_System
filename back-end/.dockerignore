@@ -1,0 +1,14 @@
+# .dockerignore
+target/
+!target/*.jar
+*.log
+.git
+.gitignore
+README.md
+Dockerfile
+docker-compose.yml
+.dockerignore
+.DS_Store
+.idea/
+*.iml
+.vscode/

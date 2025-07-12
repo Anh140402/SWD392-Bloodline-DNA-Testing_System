@@ -8,6 +8,6 @@ class AdnTestSystemApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// just ensure the application context loads
 	}
-
 }

@@ -66,8 +66,8 @@ public class TestOrderService {
         return testOrders.map(this::mapToDTO);
     }
 
-    public TestOrderResponse createTestOrder(TestOrderRequest request, UserDetails userDetails) {
-        Account account = accountRepository.findByUsername(userDetails.getUsername())
+    public TestOrderResponse createTestOrder(TestOrderRequest request) {
+        Account account = accountRepository.findById(request.getAccountId())
                 .orElseThrow(() -> new AuthException("Account not found"));
 
         validateOrderType(request.getOrderType());

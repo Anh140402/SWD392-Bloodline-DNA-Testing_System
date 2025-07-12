@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AdnTestSystemApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(AdnTestSystemApplication.class, args);
+
 	}
 
 }
