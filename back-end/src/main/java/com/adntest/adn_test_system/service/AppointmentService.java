@@ -8,10 +8,11 @@ import com.adntest.adn_test_system.exception.AuthException;
 import com.adntest.adn_test_system.repository.AccountRepository;
 import com.adntest.adn_test_system.repository.AppointmentRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +27,11 @@ public class AppointmentService {
         return mapToResponse(appointment);
     }
 
-    public Page<AppointmentResponse> getAllAppointments(Pageable pageable) {
-        return appointmentRepository.findAll(pageable)
-                .map(this::mapToResponse);
+    public List<AppointmentResponse> getAllAppointments() {
+        return appointmentRepository.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     public AppointmentResponse createAppointment(AppointmentRequest appointmentRequest) {
@@ -77,4 +80,3 @@ public class AppointmentService {
                 .build();
     }
 }
-

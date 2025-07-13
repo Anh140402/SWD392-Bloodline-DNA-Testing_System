@@ -9,13 +9,12 @@ import com.adntest.adn_test_system.repository.AccountRepository;
 import com.adntest.adn_test_system.repository.BlogRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +23,11 @@ public class BlogService {
     private final BlogRepository blogRepository;
     private final AccountRepository accountRepository;
 
-    public Page<BlogResponse> getAllBlogs(Pageable pageable) {
-        return blogRepository.findAll(pageable)
-                .map(this::mapToResponse);
+    public List<BlogResponse> getAllBlogs() {
+        return blogRepository.findAll()
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
     public BlogResponse getBlogById(String id) {
@@ -35,8 +36,7 @@ public class BlogService {
         return mapToResponse(blog);
     }
 
-    public BlogResponse createBlog(BlogRequest request, UserDetails userDetails) {
-        String userId = userDetails.getUsername();
+    public BlogResponse createBlog(BlogRequest request, String userId) {
         Account author = accountRepository.findById(userId)
                 .orElseThrow(() -> new AuthException("Author not found"));
 
@@ -69,20 +69,16 @@ public class BlogService {
         blogRepository.deleteById(id);
     }
 
-    public Page<BlogResponse> getBlogsByAuthor(String authorId, Pageable pageable) {
-        return blogRepository.findByAuthorUserId(authorId, pageable)
-                .map(this::mapToResponse);
+    public List<BlogResponse> getBlogsByAuthor(String authorId) {
+        return blogRepository.findByAuthorUserId(authorId)
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
-    public Page<BlogResponse> getRecentBlogs(Pageable pageable) {
-        return blogRepository.findRecentBlogs(pageable)
-                .map(this::mapToResponse);
-    }
+   
 
-    public Page<BlogResponse> searchBlogs(String keyword, Pageable pageable) {
-        return blogRepository.findByTitleContainingOrContentContaining(keyword, pageable)
-                .map(this::mapToResponse);
-    }
+    
 
         public boolean canUserModifyBlog(String blogId, String userId) {
         Blog blog = blogRepository.findById(blogId)

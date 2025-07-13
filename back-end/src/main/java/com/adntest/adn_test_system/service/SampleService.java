@@ -9,15 +9,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class SampleService {
 
     private final SampleRepository sampleRepository;
 
-    public Page<SampleResponse> getAllSamples(Pageable pageable) {
-        return sampleRepository.findAll(pageable)
-                .map(this::mapToResponse);
+    public List<SampleResponse> getAllSamples() {
+        return sampleRepository.findAll()
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
     public SampleResponse getSampleById(String id) {
@@ -49,17 +54,18 @@ public class SampleService {
         sampleRepository.delete(sample);
     }
 
-    public Page<SampleResponse> getSampleTypes(Pageable pageable) {
-        return sampleRepository.findDistinctSampleTypes(pageable)
-                .map(type -> SampleResponse.builder()
-                        .sampleId(type)
-                        .sampleType(type)
-                        .build());
+    public List<SampleResponse> getSampleTypes() {
+        return sampleRepository.findDistinctSampleTypes()
+            .stream()
+            .map(type -> SampleResponse.builder().sampleId(type).sampleType(type).build())
+            .collect(Collectors.toList());
     }
 
-    public Page<SampleResponse> getSamplesByType(String sampleType, Pageable pageable) {
-        return sampleRepository.findBySampleType(sampleType, pageable)
-                .map(this::mapToResponse);
+    public List<SampleResponse> getSamplesByType(String sampleType) {
+        return sampleRepository.findBySampleType(sampleType)
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
     private SampleResponse mapToResponse(Sample sample) {

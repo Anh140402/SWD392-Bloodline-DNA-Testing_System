@@ -10,12 +10,14 @@ import org.springframework.stereotype.Repository;
 import com.adntest.adn_test_system.entity.Feedback;
 import com.adntest.adn_test_system.entity.TestOrder;
 
+import java.util.List;
+
 @Repository
 public interface FeedbackRepository extends JpaRepository<Feedback, String> {
-    Page<Feedback> findByAccountUsername(String username, Pageable pageable);
-    Page<Feedback> findByTestOrder(TestOrder testOrder, Pageable pageable);
-    Page<Feedback> findByTestOrderTestOrderId(String testOrderId, Pageable pageable);
-    Page<Feedback> findByRatingGreaterThanEqual(Integer rating, Pageable pageable);
+    List<Feedback> findByAccountUsername(String username);
+    List<Feedback> findByTestOrder(TestOrder testOrder);
+    List<Feedback> findByTestOrderTestOrderId(String testOrderId);
+    List<Feedback> findByRatingGreaterThanEqual(Integer minRating);
 
     @Query("SELECT AVG(f.rating) FROM Feedback f")
     Double getAverageRating();

@@ -12,6 +12,8 @@ import com.adntest.adn_test_system.repository.AccountRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -19,8 +21,8 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Page<Account> getAllAccounts(Pageable pageable) {
-        return accountRepository.findAll(pageable);
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
     }
 
     public Account getAccountById(String id) {

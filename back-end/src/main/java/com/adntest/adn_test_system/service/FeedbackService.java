@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,26 +29,25 @@ public class FeedbackService {
     private final AccountRepository accountRepository;
     private final TestOrderRepository testOrderRepository;
 
-    public Page<FeedbackResponse> getAllFeedbacks(Pageable pageable) {
-        return feedbackRepository.findAll(pageable)
-                .map(this::mapToResponse);
+    public List<FeedbackResponse> getAllFeedbacks() {
+        return feedbackRepository.findAll()
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
-    public FeedbackResponse getFeedbackById(String id, UserDetails userDetails) {
+    public FeedbackResponse getFeedbackById(String id, String userId) {
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new AuthException("Feedback not found"));
-        if (!feedback.getAccount().getUserId().equals(userDetails.getUsername())) {
-            throw new AuthException("Access denied");
-        }
+        // No authorization check
         return mapToResponse(feedback);
     }
 
-    public FeedbackResponse createFeedback(FeedbackRequest request, UserDetails userDetails) {
-        Account account = accountRepository.findById(userDetails.getUsername())
+    public FeedbackResponse createFeedback(FeedbackRequest request, String userId) {
+        Account account = accountRepository.findById(userId)
                 .orElseThrow(() -> new AuthException("User not found"));
         TestOrder testOrder = testOrderRepository.findById(request.getTestOrderId())
                 .orElseThrow(() -> new AuthException("Test order not found"));
-
         Feedback feedback = Feedback.builder()
                 .account(account)
                 .testOrder(testOrder)
@@ -54,29 +55,22 @@ public class FeedbackService {
                 .comment(request.getComment())
                 .createdAt(LocalDateTime.now())
                 .build();
-
         return mapToResponse(feedbackRepository.save(feedback));
     }
 
-    public FeedbackResponse updateFeedback(String id, FeedbackRequest request, UserDetails userDetails) {
+    public FeedbackResponse updateFeedback(String id, FeedbackRequest request, String userId) {
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new AuthException("Feedback not found"));
-        if (!feedback.getAccount().getUserId().equals(userDetails.getUsername())) {
-            throw new AuthException("Unauthorized");
-        }
-
+        // No authorization check
         feedback.setRating(request.getRating());
         feedback.setComment(request.getComment());
-
         return mapToResponse(feedbackRepository.save(feedback));
     }
 
-    public void deleteFeedback(String id, UserDetails userDetails) {
+    public void deleteFeedback(String id, String userId) {
         Feedback feedback = feedbackRepository.findById(id)
                 .orElseThrow(() -> new AuthException("Feedback not found"));
-        if (!feedback.getAccount().getUserId().equals(userDetails.getUsername())) {
-            throw new AuthException("Unauthorized");
-        }
+        // No authorization check
         feedbackRepository.delete(feedback);
     }
 
@@ -84,9 +78,11 @@ public class FeedbackService {
 
 
 
-    public Page<FeedbackResponse> getFeedbacksByMinimumRating(Integer minRating, Pageable pageable) {
-        return feedbackRepository.findByRatingGreaterThanEqual(minRating, pageable)
-                .map(this::mapToResponse);
+    public List<FeedbackResponse> getFeedbacksByMinimumRating(Integer minRating) {
+        return feedbackRepository.findByRatingGreaterThanEqual(minRating)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
 

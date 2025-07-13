@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,41 +38,39 @@ public class TestOrderService {
             "home_collection", "lab_visit", "mail_in"
     );
 
-    public Page<TestOrderResponse> getAllTestOrders(Pageable pageable) {
-        Page<TestOrder> testOrders = testOrderRepository.findAll(pageable);
-        return testOrders.map(this::mapToDTO);
+    public List<TestOrderResponse> getAllTestOrders() {
+        return testOrderRepository.findAll()
+            .stream()
+            .map(this::mapToDTO)
+            .collect(Collectors.toList());
     }
 
-    public TestOrderResponse getTestOrderById(String id, UserDetails userDetails) {
+    public TestOrderResponse getTestOrderById(String id, String userId) {
         TestOrder testOrder = testOrderRepository.findById(id)
                 .orElseThrow(() -> new AuthException("Test order not found"));
-
-        // Authorization check
-        if (!userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")) &&
-                !testOrder.getAccount().getUsername().equals(userDetails.getUsername())) {
-            throw new AuthException("Unauthorized access to test order");
-        }
-
+        // No authorization check
         return mapToDTO(testOrder);
     }
 
-    public Page<TestOrderResponse> getTestOrdersByUser(String username, Pageable pageable) {
-        Page<TestOrder> testOrders = testOrderRepository.findByAccountUsername(username, pageable);
-        return testOrders.map(this::mapToDTO);
+    public List<TestOrderResponse> getTestOrdersByUser(String username) {
+        return testOrderRepository.findByAccountUsername(username)
+            .stream()
+            .map(this::mapToDTO)
+            .collect(Collectors.toList());
     }
 
-    public Page<TestOrderResponse> getTestOrdersByStatus(String status, Pageable pageable) {
+    public List<TestOrderResponse> getTestOrdersByStatus(String status) {
         validateStatus(status);
-        Page<TestOrder> testOrders = testOrderRepository.findByStatus(status, pageable);
-        return testOrders.map(this::mapToDTO);
+        return testOrderRepository.findByStatus(status)
+            .stream()
+            .map(this::mapToDTO)
+            .collect(Collectors.toList());
     }
 
-    public TestOrderResponse createTestOrder(TestOrderRequest request) {
-        Account account = accountRepository.findById(request.getAccountId())
+    public TestOrderResponse createTestOrder(TestOrderRequest request, String userId) {
+        Account account = accountRepository.findById(userId)
                 .orElseThrow(() -> new AuthException("Account not found"));
-
         validateOrderType(request.getOrderType());
-
         TestOrder newTestOrder = TestOrder.builder()
                 .account(account)
                 .sample(sampleRepository.findById(request.getSampleId())
@@ -84,7 +83,6 @@ public class TestOrderService {
                 .note(request.getNote())
                 .testOrderDate(LocalDateTime.now())
                 .build();
-
         return mapToDTO(testOrderRepository.save(newTestOrder));
     }
 

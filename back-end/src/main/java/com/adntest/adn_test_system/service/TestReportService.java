@@ -14,6 +14,7 @@ import com.adntest.adn_test_system.repository.TestOrderRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,8 +24,8 @@ public class TestReportService {
     private final TestReportRepository testReportRepository;
     private final TestOrderRepository testOrderRepository;
 
-    public Page<TestReport> getAllTestReports(Pageable pageable) {
-        return testReportRepository.findAll(pageable);
+    public List<TestReport> getAllTestReports() {
+        return testReportRepository.findAll();
     }
 
     public TestReport getTestReportById(String id) {
@@ -40,16 +41,16 @@ public class TestReportService {
         return testReportRepository.findByTestOrderTestOrderId(testOrderId);
     }
 
-    public Page<TestReport> getTestReportsByResult(Boolean isPositive, Pageable pageable) {
-        return testReportRepository.findByIsPositive(isPositive, pageable);
+    public List<TestReport> getTestReportsByResult(Boolean isPositive) {
+        return testReportRepository.findByIsPositive(isPositive);
     }
 
-    public Page<TestReport> getTestReportsByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
-        return testReportRepository.findByCreatedAtBetween(startDate, endDate, pageable);
+    public List<TestReport> getTestReportsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return testReportRepository.findByCreatedAtBetween(startDate, endDate);
     }
 
-    public Page<TestReport> getRecentTestReports(Pageable pageable) {
-        return testReportRepository.findRecentReports(pageable);
+    public List<TestReport> getRecentTestReports() {
+        return testReportRepository.findRecentReports();
     }
 
     public Long getPositiveResultsCount() {

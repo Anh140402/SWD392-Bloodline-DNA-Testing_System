@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/services")
@@ -22,8 +25,8 @@ public class ServiceController {
 
     @GetMapping
     @Operation(summary = "Get all services")
-    public ResponseEntity<Page<ServiceResponse>> getAllServices(Pageable pageable) {
-        return ResponseEntity.ok(serviceService.getAllServices(pageable));
+    public ResponseEntity<List<ServiceResponse>> getAllServices() {
+        return ResponseEntity.ok(serviceService.getAllServices());
     }
 
     @GetMapping("/{id}")
@@ -33,21 +36,18 @@ public class ServiceController {
     }
 
     @PostMapping
- //   @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create new service (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<ServiceResponse> createService(@Valid @RequestBody ServiceRequest request) {
         return ResponseEntity.ok(serviceService.createService(request));
     }
 
     @PutMapping("/{id}")
- //   @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update service (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<ServiceResponse> updateService(@PathVariable String id, @Valid @RequestBody ServiceRequest request) {
         return ResponseEntity.ok(serviceService.updateService(id, request));
     }
 
     @DeleteMapping("/{id}")
- //   @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete service (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteService(@PathVariable String id) {
         serviceService.deleteService(id);
@@ -56,8 +56,8 @@ public class ServiceController {
 
     @GetMapping("/type/{serviceType}")
     @Operation(summary = "Get services by type")
-    public ResponseEntity<Page<ServiceResponse>> getServicesByType(@PathVariable String serviceType, Pageable pageable) {
-        return ResponseEntity.ok(serviceService.getServicesByType(serviceType, pageable));
+    public ResponseEntity<List<ServiceResponse>> getServicesByType(@PathVariable String serviceType) {
+        return ResponseEntity.ok(serviceService.getServicesByType(serviceType));
     }
 }
 

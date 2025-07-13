@@ -13,9 +13,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,28 +40,24 @@ public class AccountController {
     }
 
     @GetMapping("/api/v1/accounts")
-   // @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get all accounts (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<Page<Account>> getAllAccounts(Pageable pageable) {
-        return ResponseEntity.ok(accountService.getAllAccounts(pageable));
+    public ResponseEntity<List<Account>> getAllAccounts() {
+        return ResponseEntity.ok(accountService.getAllAccounts());
     }
 
     @GetMapping("/api/v1/accounts/{id}")
-   // @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get account by ID (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Account> getAccountById(@PathVariable String id) {
         return ResponseEntity.ok(accountService.getAccountById(id));
     }
 
     @PutMapping("/api/v1/accounts/{id}")
-   // @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update account (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Account> updateAccount(@PathVariable String id, @Valid @RequestBody Account account) {
         return ResponseEntity.ok(accountService.updateAccount(id, account));
     }
 
     @DeleteMapping("/api/v1/accounts/{id}")
-    //@PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete account (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteAccount(@PathVariable String id) {
         accountService.deleteAccount(id);
@@ -67,15 +66,15 @@ public class AccountController {
 
     @GetMapping("/api/v1/profile")
     @Operation(summary = "Get current user profile", security = @SecurityRequirement(name = "Bearer Authentication"))
-    public ResponseEntity<Account> getProfile(@AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(accountService.getProfile(userDetails.getUsername()));
+    public ResponseEntity<Account> getProfile(@RequestParam String userId) {
+        return ResponseEntity.ok(accountService.getProfile(userId));
     }
 
     @PutMapping("/api/v1/profile")
     @Operation(summary = "Update current user profile", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Account> updateProfile(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam String userId,
             @Valid @RequestBody Account account) {
-        return ResponseEntity.ok(accountService.updateProfile(userDetails.getUsername(), account));
+        return ResponseEntity.ok(accountService.updateProfile(userId, account));
     }
 }

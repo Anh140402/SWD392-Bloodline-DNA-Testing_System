@@ -8,11 +8,13 @@ import org.springframework.stereotype.Repository;
 
 import com.adntest.adn_test_system.entity.Sample;
 
+import java.util.List;
+
 @Repository
 public interface SampleRepository extends JpaRepository<Sample, String> {
-    Page<Sample> findBySampleType(String sampleType, Pageable pageable);
+    List<Sample> findBySampleType(String sampleType);
     
     @Query("SELECT DISTINCT s.sampleType FROM Sample s")
-    Page<String> findDistinctSampleTypes(Pageable pageable);
+    List<String> findDistinctSampleTypes();
 }
 

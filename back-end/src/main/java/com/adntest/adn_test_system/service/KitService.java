@@ -9,14 +9,14 @@ import com.adntest.adn_test_system.repository.AccountRepository;
 import com.adntest.adn_test_system.repository.KitRepository;
 import com.adntest.adn_test_system.repository.TestOrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +26,14 @@ public class KitService {
     private final TestOrderRepository testOrderRepository;
     private final AccountRepository accountRepository;
 
-    public Page<KitResponse> getAllKits(Pageable pageable) {
-        return kitRepository.findAll(pageable).map(this::toResponse);
+    public List<KitResponse> getAllKits() {
+        return kitRepository.findAll().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
-    public KitResponse getKitById(String id, UserDetails userDetails) {
+    public KitResponse getKitById(String id) {
         Kit kit = kitRepository.findById(id).orElseThrow(() -> new AuthException("Kit not found"));
-        validateAccess(kit.getTestOrder().getAccount().getUserId(), userDetails);
         return toResponse(kit);
     }
 
@@ -69,23 +70,16 @@ public class KitService {
         kitRepository.deleteById(id);
     }
 
-    public KitResponse getKitByCode(String code, UserDetails userDetails) {
+    public KitResponse getKitByCode(String code) {
         Kit kit = kitRepository.findByCode(code).orElseThrow(() -> new AuthException("Kit not found"));
-        validateAccess(kit.getTestOrder().getAccount().getUserId(), userDetails);
         return toResponse(kit);
     }
 
-    public KitResponse getKitByTestOrder(String testOrderId, UserDetails userDetails) {
+    public KitResponse getKitByTestOrder(String testOrderId) {
         TestOrder testOrder = testOrderRepository.findById(testOrderId)
                 .orElseThrow(() -> new AuthException("Test order not found"));
-
-        if (!testOrder.getAccount().getUserId().equals(userDetails.getUsername())) {
-            throw new AuthException("Unauthorized access to test order's kit");
-        }
-
         Kit kit = kitRepository.findByTestOrder(testOrder)
                 .orElseThrow(() -> new AuthException("Kit not found for this test order"));
-
         return toResponse(kit);
     }
 
@@ -116,12 +110,5 @@ public class KitService {
                 .testOrderId(kit.getTestOrder().getTestOrderId())
                 .issuedAt(kit.getIssuedAt())
                 .build();
-    }
-
-    private void validateAccess(String ownerId, UserDetails userDetails) {
-        if (!userDetails.getUsername().equals(ownerId) &&
-                userDetails.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN") || a.getAuthority().equals("ROLE_STAFF"))) {
-            throw new AuthException("Unauthorized access");
-        }
     }
 }

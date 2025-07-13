@@ -9,14 +9,16 @@ import org.springframework.stereotype.Repository;
 
 import com.adntest.adn_test_system.entity.Blog;
 
+import java.util.List;
+
 @Repository
 public interface BlogRepository extends JpaRepository<Blog, String> {
-    Page<Blog> findByAuthorUserId(String authorId, Pageable pageable);
+    List<Blog> findByAuthorUserId(String authorId);
     
     @Query("SELECT b FROM Blog b WHERE b.title LIKE %:keyword% OR b.content LIKE %:keyword%")
-    Page<Blog> findByTitleContainingOrContentContaining(@Param("keyword") String keyword, Pageable pageable);
+    List<Blog> findByTitleContainingOrContentContaining(@Param("keyword") String keyword, @Param("keyword") String keyword2);
     
     @Query("SELECT b FROM Blog b ORDER BY b.createdAt DESC")
-    Page<Blog> findRecentBlogs(Pageable pageable);
+    List<Blog> findRecentBlogs();
 }
 

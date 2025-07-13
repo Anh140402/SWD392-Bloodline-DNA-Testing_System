@@ -12,15 +12,20 @@ import com.adntest.adn_test_system.repository.ServiceRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class    ServiceService {
     private final ServiceRepository serviceRepository;
 
-    public Page<ServiceResponse> getAllServices(Pageable pageable) {
-        return serviceRepository.findAll(pageable)
-                .map(this::mapToResponse);
+    public List<ServiceResponse> getAllServices() {
+        return serviceRepository.findAll()
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
     public ServiceResponse getServiceById(String id) {
@@ -64,9 +69,11 @@ public class    ServiceService {
         serviceRepository.deleteById(id);
     }
 
-    public Page<ServiceResponse> getServicesByType(String serviceType, Pageable pageable) {
-        return serviceRepository.findByServiceType(serviceType, pageable)
-                .map(this::mapToResponse);
+    public List<ServiceResponse> getServicesByType(String serviceType) {
+        return serviceRepository.findByServiceType(serviceType)
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
     private ServiceResponse mapToResponse(com.adntest.adn_test_system.entity.Service service) {
