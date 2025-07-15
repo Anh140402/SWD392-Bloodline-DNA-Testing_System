@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # SQL Server Database
   sqlserver:
-    image: nntruong112/bloodline-sqlserver:latest
+    image: nntruong112/back-end-sqlserver:latest
     container_name: sqlserver-db
     environment:
       - ACCEPT_EULA=Y
@@ -19,7 +19,7 @@ services:
 
   # Spring Boot Application
   spring-app:
-    image: nntruong112/bloodline-spring-app:latest
+    image: nntruong112/back-end-spring-app:latest
     container_name: spring-boot-app
     depends_on:
       - sqlserver

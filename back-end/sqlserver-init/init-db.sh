@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start SQL Server
-/opt/mssql/bin/sqlservr & 
+/opt/mssql/bin/sqlservr &
 
 # Wait for SQL Server to start
 for i in {1..60}; do
