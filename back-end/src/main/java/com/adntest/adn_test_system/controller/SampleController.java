@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +22,7 @@ public class SampleController {
     private final SampleService sampleService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get all samples (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<List<SampleResponse>> getAllSamples() {
         return ResponseEntity.ok(sampleService.getAllSamples());
@@ -35,13 +34,15 @@ public class SampleController {
         return ResponseEntity.ok(sampleService.getSampleById(id));
     }
 
-    @PostMapping    
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Create new sample (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<SampleResponse> createSample(@Valid @RequestBody SampleRequest request) {
         return ResponseEntity.ok(sampleService.createSample(request));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Update sample (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<SampleResponse> updateSample(@PathVariable String id, @Valid @RequestBody SampleRequest request) {
         return ResponseEntity.ok(sampleService.updateSample(id, request));

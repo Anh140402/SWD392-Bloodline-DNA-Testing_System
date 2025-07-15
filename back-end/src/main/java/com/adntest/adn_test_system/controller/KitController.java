@@ -10,8 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +22,7 @@ public class KitController {
     private final KitService kitService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get all kits (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<List<KitResponse>> getAllKits() {
         return ResponseEntity.ok(kitService.getAllKits());
@@ -36,18 +35,21 @@ public class KitController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Create new kit (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<KitResponse> createKit(@Valid @RequestBody KitRequest request) {
         return ResponseEntity.ok(kitService.createKit(request));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Update kit (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<KitResponse> updateKit(@PathVariable String id, @Valid @RequestBody KitRequest request) {
         return ResponseEntity.ok(kitService.updateKit(id, request));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete kit (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteKit(@PathVariable String id) {
         kitService.deleteKit(id);
@@ -67,6 +69,7 @@ public class KitController {
     }
 
     @PostMapping("/generate")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Generate kit for test order (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<KitResponse> generateKitForTestOrder(@RequestParam String testOrderId) {
         return ResponseEntity.ok(kitService.generateKitForTestOrder(testOrderId));

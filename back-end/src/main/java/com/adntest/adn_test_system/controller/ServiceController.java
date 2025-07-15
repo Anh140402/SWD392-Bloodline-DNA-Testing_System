@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +34,7 @@ public class ServiceController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create new service (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<ServiceResponse> createService(@Valid @RequestBody ServiceRequest request) {
         return ResponseEntity.ok(serviceService.createService(request));
@@ -48,6 +47,7 @@ public class ServiceController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete service (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteService(@PathVariable String id) {
         serviceService.deleteService(id);

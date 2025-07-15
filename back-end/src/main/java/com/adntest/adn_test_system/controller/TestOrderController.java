@@ -8,17 +8,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/test-orders")
@@ -28,7 +22,7 @@ public class TestOrderController {
     private final TestOrderService testOrderService;
 
     @GetMapping
- //   @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get all test orders (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<List<TestOrderResponse>> getAllTestOrders() {
         return ResponseEntity.ok(testOrderService.getAllTestOrders());
@@ -51,7 +45,7 @@ public class TestOrderController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Update test order (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<TestOrderResponse> updateTestOrder(
             @PathVariable String id,
@@ -60,7 +54,7 @@ public class TestOrderController {
     }
 
     @DeleteMapping("/{id}")
-  //  @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete test order (Admin only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<Void> deleteTestOrder(@PathVariable String id) {
         testOrderService.deleteTestOrder(id);
@@ -75,7 +69,7 @@ public class TestOrderController {
     }
 
     @GetMapping("/status/{status}")
-   // @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Get test orders by status (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<List<TestOrderResponse>> getTestOrdersByStatus(
             @PathVariable String status) {
@@ -83,7 +77,7 @@ public class TestOrderController {
     }
 
     @PatchMapping("/{id}/status")
-   //
+    @PreAuthorize("hasRole('ADMIN') or hasRole('STAFF')")
     @Operation(summary = "Update test order status (Admin/Staff only)", security = @SecurityRequirement(name = "Bearer Authentication"))
     public ResponseEntity<TestOrderResponse> updateTestOrderStatus(
             @PathVariable String id,
