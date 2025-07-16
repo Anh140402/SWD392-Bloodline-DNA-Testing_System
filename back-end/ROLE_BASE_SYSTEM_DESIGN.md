@@ -657,6 +657,200 @@ end note
 @enduml
 ```
 
+## 5. Detailed Sequence Diagrams
+
+### 5.1 Customer DNA Test Order Flow
+
+```plantuml
+@startuml
+actor Customer
+participant "Web Portal" as Portal
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+participant "Order Service" as Order
+participant "Appointment Service" as Appt
+participant "Sample Service" as Sample
+participant "Test Service" as Test
+participant "Report Service" as Report
+database "Database" as DB
+
+Customer -> Portal : 1. Login
+Portal -> Gateway : 2. Send Credentials
+Gateway -> Auth : 3. Authenticate
+Auth -> DB : 4. Verify Credentials
+DB --> Auth : 5. Return User Data
+Auth --> Gateway : 6. Generate JWT Token
+Gateway --> Portal : 7. Return Token
+Portal --> Customer : 8. Show Dashboard
+
+Customer -> Portal : 9. Create Test Order
+Portal -> Gateway : 10. Submit Order Request
+Gateway -> Auth : 11. Validate Token
+Auth --> Gateway : 12. Token Valid
+Gateway -> Order : 13. Create Order
+Order -> DB : 14. Save Order
+DB --> Order : 15. Order Created
+Order -> Appt : 16. Schedule Appointment
+Appt -> DB : 17. Save Appointment
+DB --> Appt : 18. Appointment Confirmed
+Appt --> Order : 19. Return Appointment Details
+Order --> Gateway : 20. Return Order Status
+Gateway --> Portal : 21. Show Order Confirmation
+Portal --> Customer : 22. Display Order & Appointment Details
+
+== Sample Collection Day ==
+
+Customer -> Portal : 23. Arrive for Appointment
+Portal -> Gateway : 24. Update Appointment Status
+Gateway -> Appt : 25. Start Appointment
+Appt -> Sample : 26. Register Sample
+Sample -> DB : 27. Save Sample Data
+DB --> Sample : 28. Sample Registered
+Sample --> Appt : 29. Sample Ready
+Appt -> Test : 30. Start Testing Process
+Test -> DB : 31. Update Test Status
+DB --> Test : 32. Status Updated
+Test --> Gateway : 33. Return Status
+Gateway --> Portal : 34. Show Processing Status
+Portal --> Customer : 35. Display "Sample Collected"
+
+== Test Processing ==
+
+Test -> Sample : 36. Process Sample
+Sample -> Test : 37. Analysis Complete
+Test -> Report : 38. Generate Report
+Report -> DB : 39. Save Report
+DB --> Report : 40. Report Saved
+Report --> Test : 41. Report Ready
+Test --> Gateway : 42. Test Complete
+Gateway --> Portal : 43. Results Ready
+Portal --> Customer : 44. Notify Results Available
+
+@enduml
+
+### 5.2 Staff Sample Processing Flow
+
+```plantuml
+@startuml
+actor "Lab Staff" as Staff
+participant "Staff Dashboard" as Dashboard
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+participant "Sample Service" as Sample
+participant "Test Service" as Test
+participant "Kit Service" as Kit
+participant "Report Service" as Report
+database "Database" as DB
+
+Staff -> Dashboard : 1. Login
+Dashboard -> Gateway : 2. Send Credentials
+Gateway -> Auth : 3. Authenticate
+Auth -> DB : 4. Verify Staff Credentials
+DB --> Auth : 5. Return Staff Data
+Auth --> Gateway : 6. Generate JWT Token
+Gateway --> Dashboard : 7. Return Token
+Dashboard --> Staff : 8. Show Lab Dashboard
+
+Staff -> Dashboard : 9. Scan Sample Barcode
+Dashboard -> Gateway : 10. Get Sample Info
+Gateway -> Sample : 11. Retrieve Sample Data
+Sample -> DB : 12. Query Sample
+DB --> Sample : 13. Return Sample Details
+Sample --> Gateway : 14. Sample Information
+Gateway --> Dashboard : 15. Display Sample Details
+
+Staff -> Dashboard : 16. Start Processing
+Dashboard -> Gateway : 17. Update Sample Status
+Gateway -> Sample : 18. Begin Processing
+Sample -> Kit : 19. Assign Test Kit
+Kit -> DB : 20. Update Kit Status
+DB --> Kit : 21. Kit Assigned
+Kit --> Sample : 22. Kit Ready
+Sample -> Test : 23. Start Analysis
+Test -> DB : 24. Update Test Status
+DB --> Test : 25. Status Updated
+
+== Analysis Process ==
+
+Test -> Sample : 26. Extract DNA
+Sample -> Test : 27. DNA Ready
+Test -> Sample : 28. Run Tests
+Sample -> Test : 29. Tests Complete
+Test -> Report : 30. Generate Results
+Report -> DB : 31. Save Results
+DB --> Report : 32. Results Saved
+Report --> Test : 33. Report Generated
+Test --> Gateway : 34. Processing Complete
+Gateway --> Dashboard : 35. Update Status
+Dashboard --> Staff : 36. Show Completion
+
+@enduml
+
+### 5.3 Admin System Management Flow
+
+```plantuml
+@startuml
+actor Admin
+participant "Admin Console" as Console
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+participant "User Service" as User
+participant "System Service" as System
+participant "Analytics Service" as Analytics
+database "Database" as DB
+
+Admin -> Console : 1. Login
+Console -> Gateway : 2. Send Admin Credentials
+Gateway -> Auth : 3. Authenticate
+Auth -> DB : 4. Verify Admin Access
+DB --> Auth : 5. Return Admin Data
+Auth --> Gateway : 6. Generate Admin Token
+Gateway --> Console : 7. Return Token
+Console --> Admin : 8. Show Admin Dashboard
+
+== System Monitoring ==
+
+Admin -> Console : 9. Request System Status
+Console -> Gateway : 10. Get System Metrics
+Gateway -> System : 11. Fetch Metrics
+System -> DB : 12. Query Performance Data
+DB --> System : 13. Return Metrics
+System -> Analytics : 14. Process Metrics
+Analytics --> System : 15. Analysis Results
+System --> Gateway : 16. System Status
+Gateway --> Console : 17. Display Metrics
+Console --> Admin : 18. Show System Health
+
+== User Management ==
+
+Admin -> Console : 19. View User Reports
+Console -> Gateway : 20. Request User Data
+Gateway -> User : 21. Get User Statistics
+User -> DB : 22. Query User Data
+DB --> User : 23. Return User Stats
+User -> Analytics : 24. Generate Reports
+Analytics --> User : 25. User Analysis
+User --> Gateway : 26. User Reports
+Gateway --> Console : 27. Display Reports
+Console --> Admin : 28. Show User Dashboard
+
+== System Updates ==
+
+Admin -> Console : 29. Initialize Update
+Console -> Gateway : 30. Request Update
+Gateway -> System : 31. Start Update Process
+System -> DB : 32. Backup Data
+DB --> System : 33. Backup Complete
+System -> System : 34. Apply Updates
+System -> DB : 35. Update Configs
+DB --> System : 36. Configs Updated
+System --> Gateway : 37. Update Complete
+Gateway --> Console : 38. Update Status
+Console --> Admin : 39. Show Success
+
+@enduml
+```
+
 ## Chi tiết Luồng Xử Lý
 
 ### 1. Customer Flow
