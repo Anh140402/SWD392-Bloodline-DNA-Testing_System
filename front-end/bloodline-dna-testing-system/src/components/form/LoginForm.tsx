@@ -1,15 +1,20 @@
-// src/components/auth/LoginForm.tsx
 import React from "react";
-import { Button, Form, Input, Typography, message } from "antd";
+import { Button, Form, Input, Typography } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Paragraph, Text } = Typography;
 
-const LoginForm: React.FC<{
+interface LoginFormProps {
   onRegisterClick: () => void;
   loading: boolean;
-  onLogin: (values: any) => void;
-}> = ({ onRegisterClick, loading, onLogin }) => {
+  onLogin: (values: { username: string; password: string }) => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({
+  onRegisterClick,
+  loading,
+  onLogin,
+}) => {
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left side - Image */}
@@ -19,7 +24,7 @@ const LoginForm: React.FC<{
           alt="Login Background"
           className="w-full h-full object-cover object-top"
         />
-        <div className="absolute  inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20"></div>
         <div className="absolute inset-0 flex justify-center">
           <div className="text-center text-white p-8 mt-[10%]">
             <Title level={1} className="text-white mb-4">
@@ -33,7 +38,7 @@ const LoginForm: React.FC<{
       </div>
 
       {/* Right side - Form */}
-      <div className="w-1/2 flex  justify-center p-12 bg-gray-50">
+      <div className="w-1/2 flex justify-center p-12 bg-gray-50">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center mb-8">
             <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex justify-center mb-6">
