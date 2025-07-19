@@ -4,16 +4,18 @@ import { Layout } from "antd";import HeaderComponent from "../components/Header"
 import MainContentComponent from "../components/MainContent";
 import FooterComponent from "../components/Footer";
 import { GetAllUsers } from "../api/testOrder";
+import axios from "axios";
 // import { GetAllTestOrders } from "../api/testOrder";
 
 const HomePage: React.FC = () => {
   const [users, setUsers] = React.useState([]);
 
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await GetAllUsers();
-        setUsers(response.data);
+        const response = await axios.get("http://localhost:8080/api/v1/accounts");
+        setUsers(response.data); // giả sử API trả về mảng user ở đây
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -21,6 +23,7 @@ const HomePage: React.FC = () => {
 
     fetchUsers();
   }, []);
+
   console.log("Users:", users); // Kiểm tra dữ liệu người dùng
 
   return (

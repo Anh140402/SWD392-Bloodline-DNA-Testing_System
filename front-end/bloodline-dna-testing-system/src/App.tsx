@@ -7,11 +7,11 @@ import CreateAppointment from "./pages/CreateAppoiment";
 import Login from "./pages/Login";
 const App: React.FC = () => {
   return (
-    // <HomePage />
+    <HomePage />
     // <StaffPage />
     // <DetailPage />
     // <CreateAppointment />
-    <Login />
+    // <Login />
   );
 };
 
